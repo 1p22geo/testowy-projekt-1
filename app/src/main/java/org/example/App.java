@@ -4,12 +4,84 @@
 package org.example;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class App {
+public class App extends JFrame {
+
+  private JList<String> vehicleList;
+  private DefaultListModel<String> listModel;
+
+  public App() {
+    setTitle("Samohut");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setLayout(new BorderLayout(10, 10));
+
+    JMenuBar menuBar = new JMenuBar();
+    JMenu bazaMenu = new JMenu("Baza");
+    JMenuItem newItem = new JMenuItem("Nowa");
+    JMenuItem saveItem = new JMenuItem("Zapisz");
+    JMenuItem loadItem = new JMenuItem("Wczytaj");
+    bazaMenu.add(newItem);
+    bazaMenu.add(saveItem);
+    bazaMenu.add(loadItem);
+    menuBar.add(bazaMenu);
+    setJMenuBar(menuBar);
+
+    listModel = new DefaultListModel<>();
+    listModel.addElement("Opel Astra");
+    listModel.addElement("Opel Corsa");
+    listModel.addElement("Wolzwagen");
+
+    vehicleList = new JList<>(listModel);
+    JScrollPane listScrollPane = new JScrollPane(vehicleList);
+
+    JPanel listPanel = new JPanel(new BorderLayout(5, 5));
+    listPanel.add(new JLabel("Lista pojazdów", SwingConstants.CENTER), BorderLayout.NORTH);
+    listPanel.add(listScrollPane, BorderLayout.CENTER);
+    listPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+    JPanel brandPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    brandPanel.add(new JLabel("Marka"));
+
+    String[] brands = { "Opel", "Fiat", "Iveco", "Volkswagen", "Daewoo" };
+    JComboBox<String> brandComboBox = new JComboBox<>(brands);
+    brandPanel.add(brandComboBox);
+
+    JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+    JButton addButton = new JButton("Dodaj");
+    JButton deleteButton = new JButton("Usuń");
+    JButton infoButton = new JButton("Info");
+
+    buttonPanel.add(addButton);
+    buttonPanel.add(deleteButton);
+    buttonPanel.add(infoButton);
+
+    JPanel controlsPanel = new JPanel();
+    controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
+    controlsPanel.add(brandPanel);
+    controlsPanel.add(Box.createVerticalStrut(10));
+    controlsPanel.add(buttonPanel);
+    controlsPanel.add(Box.createVerticalGlue());
+    controlsPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
+
+    addButton.addActionListener(e -> {
+      new VehicleDetailsDialog(this).setVisible(true);
+    });
+
+    infoButton.addActionListener(e -> {
+      new VehicleStatsDialog(this).setVisible(true);
+    });
+
+    add(listPanel, BorderLayout.CENTER);
+    add(controlsPanel, BorderLayout.EAST);
+
+    pack();
+    setLocationRelativeTo(null);
+  }
+
   public static void main(String[] args) {
-    JFrame jf = new JFrame("Okno");
-    jf.setSize(400, 300);
-    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    jf.setVisible(true);
+    SwingUtilities.invokeLater(() -> {
+      new App().setVisible(true);
+    });
   }
 }
